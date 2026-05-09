@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+        clipi runs with the hardened runtime (Developer ID + notarization
+        require it), but doesn't need any of the runtime-relaxing entitlements:
+        no JIT, no unsigned dylibs, no disabled library validation. The features
+        we use (Carbon hot key, NSPasteboard, AX, CGEvent.post) all work under
+        bare hardened runtime — Accessibility is a separate user-granted
+        permission, not an entitlement.
+
+        Leaving the dict empty is intentional: it produces a hardened-runtime
+        binary with no scope to reduce, which gives notarization the cleanest
+        possible review and avoids accidentally weakening the app's posture.
+    -->
+</dict>
+</plist>

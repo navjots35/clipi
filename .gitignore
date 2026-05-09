@@ -1,0 +1,29 @@
+# Build output
+build/
+
+# Generated iconset (regenerable via scripts/make-icon.sh — only the .icns is tracked)
+Resources/clipi.iconset/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Xcode (we don't use it but in case anyone opens the package)
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+*.xcuserstate
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local env that shouldn't ever land in git
+.env
+*.local
