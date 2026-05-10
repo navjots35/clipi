@@ -102,11 +102,18 @@ final class PanelController {
 
     // MARK: – Positioning
 
-    /// Caret-anchored when AX reports a caret rect; Spotlight-style centered otherwise.
-    /// Never falls back to the mouse pointer — that lands the panel in arbitrary places.
+    /// Three-tier positioning, most-specific to least-specific:
+    ///   1. Text caret (via Accessibility) — accurate but unavailable in many
+    ///      Electron/browser contexts that don't implement
+    ///      `kAXBoundsForRangeParameterizedAttribute`.
+    ///   2. Mouse cursor — what most users mean when they say "pops up under
+    ///      your cursor" (Windows-style). Always available.
+    ///   3. Spotlight-style center — only hit when the mouse is somehow off
+    ///      every connected screen.
     private func positionForPaste(_ panel: ClipboardPanel) {
         let size = panel.frame.size
 
+        // Tier 1: text caret.
         if let caret = CaretLocator.currentCaretFrame(),
            let screen = screen(containing: NSPoint(x: caret.midX, y: caret.midY)) ?? NSScreen.main {
             // Below the caret with a small gap; if it would clip off-screen, place above.
@@ -118,8 +125,17 @@ final class PanelController {
             return
         }
 
-        // Spotlight-style fallback: centered horizontally, ~38% from the top of the
-        // active screen's visible area.
+        // Tier 2: mouse cursor. Place the panel below-and-slightly-right of the
+        // pointer so the cursor lands on the search field (where you'd start
+        // typing immediately) rather than on a row.
+        let mouse = NSEvent.mouseLocation
+        if let mouseScreen = screen(containing: mouse) {
+            let origin = NSPoint(x: mouse.x - 12, y: mouse.y - size.height - Self.caretGap)
+            panel.setFrameOrigin(clamp(origin, size: size, in: mouseScreen.visibleFrame))
+            return
+        }
+
+        // Tier 3: Spotlight-style center on the active screen.
         let active = activeScreen()
         let visible = active.visibleFrame
         let x = visible.midX - size.width / 2

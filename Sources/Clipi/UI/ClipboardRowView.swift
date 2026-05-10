@@ -76,11 +76,15 @@ struct ClipboardRowView: View {
         return item.relativeTimeText
     }
 
-    /// "⌘1" through "⌘9" then "⌘0" for the top-10 visible items. Nil otherwise.
+    /// "1" through "9" then "0" for the top-10 visible items. We show the plain
+    /// digit because that's the keystroke that actually works — `⌘1`–`⌘9` is
+    /// intercepted by the previously-active app's menu (Chrome/Finder tabs)
+    /// before our local NSEvent monitor sees it. Plain digits are caught when
+    /// the search field is empty.
     private var shortcutBadge: String? {
         switch index {
-        case 0...8: return "⌘\(index + 1)"
-        case 9:     return "⌘0"
+        case 0...8: return "\(index + 1)"
+        case 9:     return "0"
         default:    return nil
         }
     }

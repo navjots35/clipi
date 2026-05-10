@@ -31,7 +31,7 @@ Inside the panel:
 | `↑` `↓` | Move selection |
 | `↵` | Paste with original formatting |
 | `⌘↵` | Paste as plain text (strips rich formatting) |
-| `⌘1`–`⌘9`, `⌘0` | Jump-paste an item by position |
+| `1`–`9`, `0` | Jump-paste an item by position (works when the search field is empty) |
 | `esc` | Close (or clear search if typing) |
 | `⌘,` | Open Settings |
 | Type to search | Fuzzy filter across content + source app name |
