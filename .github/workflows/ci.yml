@@ -1,0 +1,69 @@
+name: CI
+
+# Runs on every push to main/develop and on every PR targeting them.
+# Build verification only — no signing identity, no notarization. The release
+# pipeline (scripts/release.sh) is invoked manually with the maintainer's
+# Developer ID cert in their keychain; CI just confirms `./scripts/build.sh`
+# produces a well-formed bundle on a clean macOS runner.
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# Cancel an in-flight CI run when a new commit is pushed to the same PR/branch.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build · ${{ matrix.os }} · ${{ matrix.opt }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-latest]
+        opt: [Onone, O]   # debug-grade and release-grade
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Toolchain versions
+        run: |
+          echo "macOS: $(sw_vers -productVersion)"
+          echo "Xcode: $(xcodebuild -version | head -1)"
+          echo "Swift: $(swift --version | head -1)"
+          echo "SDK: $(xcrun --sdk macosx --show-sdk-version)"
+
+      - name: Build (ad-hoc signed)
+        run: OPT_FLAG=-${{ matrix.opt }} ./scripts/build.sh
+
+      - name: Verify bundle structure
+        run: |
+          set -euo pipefail
+          test -x build/clipi.app/Contents/MacOS/clipi
+          test -f build/clipi.app/Contents/Info.plist
+          test -f build/clipi.app/Contents/Resources/clipi.icns
+          test -f build/clipi.app/Contents/PkgInfo
+
+      - name: Verify code signature
+        run: codesign --verify --deep --strict --verbose=2 build/clipi.app
+
+      - name: Validate Info.plist keys
+        run: |
+          set -euo pipefail
+          PB=/usr/libexec/PlistBuddy
+          PLIST=build/clipi.app/Contents/Info.plist
+          # Sanity-check that required Info.plist keys exist; PlistBuddy exits
+          # non-zero if any key is missing, which fails the step.
+          $PB -c "Print :CFBundleIdentifier" $PLIST
+          $PB -c "Print :CFBundleVersion" $PLIST
+          $PB -c "Print :CFBundleShortVersionString" $PLIST
+          $PB -c "Print :NSAccessibilityUsageDescription" $PLIST
+
+      - name: Binary architecture report
+        run: lipo -info build/clipi.app/Contents/MacOS/clipi

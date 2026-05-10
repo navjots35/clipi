@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # GitHub Actions versions in .github/workflows/*.yml — keeps actions/checkout
+  # and friends pinned to current stable releases without manual chasing.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "ci"
