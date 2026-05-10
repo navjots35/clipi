@@ -37,6 +37,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         watcher?.stop()
     }
 
+    /// Critical for menu-bar apps. By default AppKit terminates an app when its
+    /// last NSWindow closes. clipi's onboarding card and Settings window are the
+    /// only NSWindows — closing either of them used to silently quit the whole
+    /// app, killing the watcher and unregistering the hotkey. Returning `false`
+    /// keeps the process alive in the background; the only path to terminate is
+    /// the status-item menu's explicit "Quit clipi".
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false
+    }
+
     func openSettings() {
         SettingsWindowController.shared.show(store: store)
     }
