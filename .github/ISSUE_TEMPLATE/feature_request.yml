@@ -1,0 +1,31 @@
+name: Feature request
+description: Suggest a new behavior or capability for clipi.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing: skim the [open enhancement issues](https://github.com/navjots35/clipi/issues?q=is%3Aissue+is%3Aopen+label%3Aenhancement) to make sure this isn't already discussed. clipi tries to stay small and keyboard-first; features that pull it toward "do everything" are likely to be politely declined.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the actual workflow / friction. Not the proposed solution — that comes next.
+      placeholder: |
+        I copy hex color codes constantly while designing. When I summon clipi, color items
+        all look identical because the title is just "#1A2B3C" with no preview swatch.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: What's your proposed solution?
+      description: Optional. If you have a specific idea, share it. If not, leave blank — sometimes the right design comes from the discussion.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Other apps that solve this, or workarounds you currently use.

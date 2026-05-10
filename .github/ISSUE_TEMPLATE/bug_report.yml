@@ -1,0 +1,67 @@
+name: Bug report
+description: clipi did something wrong, crashed, or behaved unexpectedly.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. The more specific you are, the faster it gets fixed.
+
+  - type: input
+    id: clipi-version
+    attributes:
+      label: clipi version
+      description: Visible in Settings → About, or via `defaults read /Applications/clipi.app/Contents/Info CFBundleShortVersionString`
+      placeholder: "0.1.1"
+    validations:
+      required: true
+
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      description: "Apple menu → About This Mac"
+      placeholder: "macOS 14.5 (23F79)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How was clipi installed?
+      options:
+        - Homebrew tap (brew install --cask navjots35/tap/clipi)
+        - DMG from GitHub Releases
+        - Built from source
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug. What did you do? What did clipi do? What did you expect to happen instead?
+      placeholder: |
+        1. Press ⌥⌘V to open clipi
+        2. Click the third item in the list
+        3. Expected: it pastes into the previous app
+           Actual: nothing happens / panel just closes / app crashes
+    validations:
+      required: true
+
+  - type: textarea
+    id: crash-log
+    attributes:
+      label: Crash log (if applicable)
+      description: |
+        If clipi crashed, attach the most recent crash report from `~/Library/Logs/DiagnosticReports/`.
+        Either paste the contents here (long is fine — we read them) or drag-drop the file.
+      render: shell
+
+  - type: checkboxes
+    id: ax-granted
+    attributes:
+      label: Accessibility permission
+      options:
+        - label: I've granted clipi Accessibility access in System Settings → Privacy & Security
