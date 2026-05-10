@@ -279,6 +279,25 @@ struct ClipboardPanelView: View {
                     return nil
                 }
             }
+
+            // Plain-digit quick-paste — the design and README advertise ⌘1–⌘9,
+            // but clipi runs `.accessory` + nonactivating panel which means the
+            // *previous* app is still .active and its main menu may bind those
+            // (Chrome / Finder / Safari all use ⌘1–⌘9 for tabs). Those host-app
+            // shortcuts intercept the keystroke before our local monitor sees it.
+            // As a robust fallback, treat plain `1`–`9` / `0` as quick-paste
+            // when the search field is empty — i.e., the user clearly isn't
+            // mid-search, so swallowing digits is unambiguous.
+            if query.isEmpty,
+               event.modifierFlags.intersection([.command, .option, .control]).isEmpty,
+               let chars = event.charactersIgnoringModifiers,
+               chars.count == 1,
+               let scalar = chars.unicodeScalars.first,
+               let digit = Int(String(scalar)),
+               (0...9).contains(digit) {
+                pickAt(digit == 0 ? 9 : digit - 1)
+                return nil
+            }
             return event
         }
     }

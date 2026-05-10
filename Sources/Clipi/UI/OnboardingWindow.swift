@@ -107,7 +107,7 @@ private struct OnboardingView: View {
             step(1, "Press to summon",
                  "Hit ⌥⌘V anywhere. clipi opens right under your cursor.")
             step(2, "Pick with one key",
-                 "Use ↑↓ or ⌘1–⌘9. Hit ↵ to paste — ⌘↵ for plain text.")
+                 "Use ↑↓ or just press 1–9. Hit ↵ to paste — ⌘↵ for plain text.")
             step(3, "Stays out of trouble",
                  "1Password, banking sites, and password fields are excluded by default.")
         }
